@@ -71,8 +71,8 @@
 		4356D8EB237A131200A717CF /* IRNumberKeyboard */ = {
 			isa = PBXGroup;
 			children = (
-				4356D8F5237A139B00A717CF /* Supporting Files */,
 				4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */,
+				4356D8F5237A139B00A717CF /* Supporting Files */,
 			);
 			path = IRNumberKeyboard;
 			sourceTree = "<group>";
