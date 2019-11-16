@@ -73,13 +73,29 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     var buttonDictionary: [String : UIButton]
     var separatorViews: [UIView]
     let locale: Locale
+    weak var _keyInput: UIKeyInput?
     
     
     // MARK: - Public Accessible Variables
     
     /// The receiver key input object. If `nil` the object at top of the responder chain is used.
-    public weak var keyInput: UIKeyInput?
+    public weak var keyInput: UIKeyInput? {
+        
+        if let input = _keyInput {
+            return input
+        }
+        
+        guard let firstResponder = UIApplication.shared.keyWindow?.firstResponder else { return nil }
+        guard let firstResponderKeyInput = firstResponder as? UIKeyInput else {
+            print("Warning: First responder \(firstResponder) does not conform to the UIKeyInput protocol.")
+            return nil
+        }
+        
+        _keyInput = firstResponderKeyInput
+        return firstResponderKeyInput
+    }
 
+    
     /// Delegate to change text insertion or return key behavior.
     public weak var delegate: IRNumberKeyboardDelegate?
 
@@ -184,4 +200,19 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
 
     
+    
+}
+
+extension UIView {
+    var firstResponder: UIView? {
+        guard !isFirstResponder else { return self }
+        
+        for subview in subviews {
+            if let firstResponder = subview.firstResponder {
+                return firstResponder
+            }
+        }
+        
+        return nil
+    }
 }
