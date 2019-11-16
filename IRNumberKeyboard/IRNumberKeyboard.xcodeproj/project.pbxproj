@@ -15,6 +15,8 @@
 		4356D907237A140800A717CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4356D905237A140800A717CF /* LaunchScreen.storyboard */; };
 		4356D90D237B73B400A717CF /* IRNumberKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */; };
 		4356D90E237B748B00A717CF /* IRNumberKeyboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356D8E9237A131200A717CF /* IRNumberKeyboard.framework */; };
+		4356D910237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D90F237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift */; };
+		4356D914237DF02D00A717CF /* IRNumberKeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		4356D906237A140800A717CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4356D908237A140800A717CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboard.swift; sourceTree = "<group>"; };
+		4356D90F237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboardDelegate.swift; sourceTree = "<group>"; };
+		4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboardButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */,
+				4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */,
+				4356D911237DEF6800A717CF /* Protocols */,
 				4356D8F5237A139B00A717CF /* Supporting Files */,
 			);
 			path = IRNumberKeyboard;
@@ -97,6 +103,14 @@
 				4356D908237A140800A717CF /* Info.plist */,
 			);
 			path = NumberKeyboardExample;
+			sourceTree = "<group>";
+		};
+		4356D911237DEF6800A717CF /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				4356D90F237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +226,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4356D90D237B73B400A717CF /* IRNumberKeyboard.swift in Sources */,
+				4356D910237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift in Sources */,
+				4356D914237DF02D00A717CF /* IRNumberKeyboardButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

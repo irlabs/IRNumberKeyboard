@@ -10,62 +10,6 @@ import UIKit
 
 
 /**
- The `IRNumberKeyboardDelegate` protocol defines the messages sent to a delegate object as part of the sequence of editing text. All of the methods of this protocol are optional (implemented in an extension)
- */
-public protocol IRNumberKeyboardDelegate: class {
-    
-    /**
-     Asks whether the specified text should be inserted.
-     
-     - Parameter numberKeyboard: The keyboard instance proposing the text insertion.
-     - Parameter text:           The proposed text to be inserted.
-     
-     - Returns:    `true` if the text should be inserted or `false` if it should not.
-    */
-    func numberKeyboardShouldInsert(numberKeyboard: IRNumberKeyboard, text: String) -> Bool
-    
-    /**
-     Asks the delegate if the keyboard should process the pressing of the return button.
-     
-     - Parameter numberKeyboard: The keyboard whose return button was pressed.
-     
-     - Returns:    `true` if the keyboard should implement its default behavior for the return button; otherwise, `false`.
-     */
-    func numberKeyboardShouldReturn(numberKeyboard: IRNumberKeyboard) -> Bool
-
-    /**
-     Asks the delegate if the keyboard should remove the character just before the cursor.
-     
-     - Parameter numberKeyboard: The keyboard whose return backwards button was pressed.
-     
-     - Returns:    `true` if the keyboard should implement its default behavior for the delete backward button; otherwise, `false`.
-     */
-    func numberKeyboardShouldDeleteBackward(numberKeyboard: IRNumberKeyboard) -> Bool
-
-}
-
-extension IRNumberKeyboardDelegate {
-    func numberKeyboardShouldInsert(text: String) -> Bool { return true }
-    func numberKeyboardShouldReturn() -> Bool { return false }
-    func numberKeyboardShouldDeleteBackward() -> Bool { return false }
-}
-
-
-/**
- Specifies the style of a keyboard button.
-*/
-public enum IRNumberKeyboardButtonStyle: Int {
-    /// A white style button, such as those for the number keys.
-    case white
-    /// A gray style button, such as the backspace key.
-    case gray
-    /// A done style button, for example, a button that completes some task and returns to the previous view.
-    case done
-}
-
-
-
-/**
  A simple numeric keyboard component, with some configurable buttons.
 */
 public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
@@ -181,9 +125,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter title:     The title to display in the key.
      - Parameter style:     The style of the button key.
      - Parameter target:    The target object—that is, the object to which the action message is sent.
-     - Parameter action:    A selector identifying an action message. It cannot be NULL.
+     - Parameter action:    A selector identifying an action message. It cannot be `nil`.
     */
-    public func configureSpecialKey(withTitle title :String, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any, action: Selector) {
+    public func configureSpecialKey(withTitle title :String, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any?, action: Selector) {
         
     }
     
@@ -193,9 +137,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter image:     The image to display in the key.
      - Parameter style:     The style of the button key.
      - Parameter target:    The target object—that is, the object to which the action message is sent.
-     - Parameter action:    A selector identifying an action message. It cannot be NULL.
+     - Parameter action:    A selector identifying an action message. It cannot be `nil`.
     */
-    public func configureSpecialKey(withImage image: UIImage, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any, action: Selector) {
+    public func configureSpecialKey(withImage image: UIImage, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any?, action: Selector) {
         
     }
 
