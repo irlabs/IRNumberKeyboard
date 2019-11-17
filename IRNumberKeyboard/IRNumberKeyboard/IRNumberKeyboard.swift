@@ -20,6 +20,11 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     weak var _keyInput: UIKeyInput?
     
     
+    private let numberOfRows: Int = 4
+    private let rowHeight: CGFloat = 55.0
+    private let padBorder: CGFloat = 7.0
+    private let padSpacing: CGFloat = 8.0
+    
     // MARK: - Public Accessible Variables
     
     /// The receiver key input object. If `nil` the object at top of the responder chain is used.
@@ -142,8 +147,67 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     public func configureSpecialKey(withImage image: UIImage, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any?, action: Selector) {
         
     }
-
     
+    
+    // MARK: - Layout
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
+        var returnSize = size
+        let isPad = UI_USER_INTERFACE_IDIOM() == .pad
+        let spacing: CGFloat = isPad ? padBorder : 0.0
+        
+        returnSize.height = rowHeight * CGFloat(numberOfRows) + (spacing * 2.0)
+        if returnSize.width == 0.0 {
+            returnSize.width = UIScreen.main.bounds.size.width
+        }
+        
+        return returnSize
+    }
+    
+    
+    private func buttonRect(_ rect: CGRect, contentRect: CGRect, isPad: Bool) -> CGRect {
+        var returnRect = rect.offsetBy(dx: contentRect.origin.x, dy: contentRect.origin.y)
+        
+        if isPad {
+            let inset: CGFloat = padSpacing / 2.0
+            returnRect = returnRect.insetBy(dx: inset, dy: inset)
+        }
+        
+        return returnRect
+    }
+    
+    
+    // MARK: - Localized System String
+    
+    private func localizedSystemString(_ systemText: String) -> String {
+        let bundle = Bundle(identifier: "com.apple.UIKit")
+        return bundle?.localizedString(forKey: systemText, value: "", table: nil) ?? systemText
+    }
+    
+    
+    // MARK: - Audio Feedback
+    
+    public var enableInputClicksWhenVisible: Bool {
+        return true
+    }
+    
+    
+    // MARK: - Accessing Keyboard Images
+    
+    class func keyboardImage(named name: NSString) -> UIImage? {
+        let resource = name.deletingPathExtension
+        
+        if resource.isEmpty {
+            return nil
+        }
+        
+        let bundle = Bundle(for: self)
+        return UIImage(named: resource, in: bundle, compatibleWith: nil)
+    }
     
 }
 
