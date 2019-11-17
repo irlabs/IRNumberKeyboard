@@ -14,7 +14,7 @@ import UIKit
 */
 public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
-    var buttonDictionary: [String : UIButton]
+    var buttonDictionary: [String : IRNumberKeyboardButton]
     var separatorViews: [UIView]
     let locale: Locale
     weak var _keyInput: UIKeyInput?
@@ -97,6 +97,67 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     private func setupViews() {
         
+        let buttonFont = UIFont.systemFont(ofSize: 28.0, weight: .light)
+        let doneButtonFont = UIFont.systemFont(ofSize: 17.0)
+        
+        // Number buttons
+        for i in 0...9 {
+            let button = IRNumberKeyboardButton(style: .white, type: .number)
+            let key = "\(i)"
+            button.setTitle(key, for: .normal)
+            button.titleLabel?.font = buttonFont
+            
+            buttonDictionary[key] = button
+        }
+        
+        // Backspace button
+        let backspaceButton = IRNumberKeyboardButton(style: .gray, type: .backspace)
+        backspaceButton.setImage(UIImage(named: "delete"), for: .normal)
+        backspaceButton.addTarget(self, action: #selector(backspaceRepeat(_:)), forContinuousPress: 0.15)
+        buttonDictionary["back"] = backspaceButton
+        
+        // Special button
+        let specialButton = IRNumberKeyboardButton(style: .gray, type: .special)
+        buttonDictionary["special"] = specialButton
+        
+        // Done button
+        let doneButton = IRNumberKeyboardButton(style: .done, type: .done)
+        doneButton.setTitle(localizedSystemString("Done"), for: .normal)
+        doneButton.titleLabel?.font = doneButtonFont
+        buttonDictionary["done"] = doneButton
+        
+        // Decimal point button
+        let decimalPointButton = IRNumberKeyboardButton(style: .white, type: .decimalPoint)
+        let decimalSeparator = Locale.current.decimalSeparator ?? "."
+        decimalPointButton.setTitle(decimalSeparator, for: .normal)
+        buttonDictionary["point"] = decimalPointButton
+
+        
+        // Button Actions & Add to view
+        for (_, button) in buttonDictionary {
+            button.isExclusiveTouch = true
+            button.addTarget(self, action: #selector(buttonInput(_:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(buttonClickPlay), for: .touchDown)
+            
+            addSubview(button)
+        }
+        
+        // Pan Gesture
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleHighlight(gestureRecognizer:)))
+        addGestureRecognizer(panGesture)
+        
+        
+        // Default Special key
+        if let dismissImage = UIImage(named: "dismiss") {
+            self.configureSpecialKey(withImage: dismissImage, buttonStyle: .gray, target: self, action: #selector(dismissKeyboard))
+        }
+        
+        // Default Return Key
+        self.returnKeyTitle = localizedSystemString("Done")
+        self.returnKeyButtonStyle = .done
+        
+        // Size to fit (will trigger layout)
+        self.sizeToFit()
     }
     
     
@@ -149,6 +210,56 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
     
     
+    // MARK: - Input
+    
+    @objc
+    private func handleHighlight(gestureRecognizer: UIPanGestureRecognizer) {
+        
+        let point = gestureRecognizer.location(in: self)
+        if gestureRecognizer.state == .changed || gestureRecognizer.state == .ended {
+            for (_, button) in buttonDictionary {
+                let isInside = button.frame.contains(point) && !button.isHidden
+                
+                if gestureRecognizer.state == .changed {
+                    button.isHighlighted = isInside
+                } else {
+                    button.isHighlighted = false
+                }
+                
+                if gestureRecognizer.state == .ended && isInside {
+                    button.sendActions(for: .touchUpInside)
+                }
+            }
+        }
+    }
+
+    @objc
+    private func buttonClickPlay() {
+        UIDevice.current.playInputClick()
+    }
+
+    @objc
+    private func buttonInput(_ button: IRNumberKeyboardButton) {
+        
+    }
+
+    @objc
+    private func backspaceRepeat(_ button: IRNumberKeyboardButton) {
+        guard let input = keyInput  else { return }
+        guard input.hasText else { return }
+        
+        buttonClickPlay()
+        buttonInput(button)
+    }
+    
+    
+    // MARK: - Dismiss the Keyboard
+    
+    @objc
+    private func dismissKeyboard() {
+        
+    }
+    
     // MARK: - Layout
     
     public override func layoutSubviews() {
@@ -194,21 +305,6 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     public var enableInputClicksWhenVisible: Bool {
         return true
     }
-    
-    
-    // MARK: - Accessing Keyboard Images
-    
-    class func keyboardImage(named name: NSString) -> UIImage? {
-        let resource = name.deletingPathExtension
-        
-        if resource.isEmpty {
-            return nil
-        }
-        
-        let bundle = Bundle(for: self)
-        return UIImage(named: resource, in: bundle, compatibleWith: nil)
-    }
-    
 }
 
 extension UIView {
