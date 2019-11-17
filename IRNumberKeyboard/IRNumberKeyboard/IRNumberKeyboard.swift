@@ -14,7 +14,7 @@ import UIKit
 */
 public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
-    var buttonDictionary: [String : IRNumberKeyboardButton]
+    var keyboardButtons: [IRNumberKeyboardButton]
     var separatorViews: [UIView]
     let locale: Locale
     weak var _keyInput: UIKeyInput?
@@ -78,7 +78,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Returns: An initialized view object or `nil` if the view could not be initialized.
     */
     public init(frame: CGRect = .zero, inputViewStyle: UIInputView.Style = .keyboard, locale: Locale = .current) {
-        self.buttonDictionary = [:]
+        self.keyboardButtons = []
         self.separatorViews = []
         self.locale = locale
         
@@ -102,39 +102,39 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Number buttons
         for i in 0...9 {
-            let button = IRNumberKeyboardButton(style: .white, type: .number)
             let key = "\(i)"
+            let button = IRNumberKeyboardButton(style: .white, type: .number(key: key))
             button.setTitle(key, for: .normal)
             button.titleLabel?.font = buttonFont
             
-            buttonDictionary[key] = button
+            keyboardButtons.append(button)
         }
         
         // Backspace button
         let backspaceButton = IRNumberKeyboardButton(style: .gray, type: .backspace)
         backspaceButton.setImage(UIImage(named: "delete"), for: .normal)
         backspaceButton.addTarget(self, action: #selector(backspaceRepeat(_:)), forContinuousPress: 0.15)
-        buttonDictionary["back"] = backspaceButton
+        keyboardButtons.append(backspaceButton)
         
         // Special button
         let specialButton = IRNumberKeyboardButton(style: .gray, type: .special)
-        buttonDictionary["special"] = specialButton
+        keyboardButtons.append(specialButton)
         
         // Done button
         let doneButton = IRNumberKeyboardButton(style: .done, type: .done)
         doneButton.setTitle(localizedSystemString("Done"), for: .normal)
         doneButton.titleLabel?.font = doneButtonFont
-        buttonDictionary["done"] = doneButton
+        keyboardButtons.append(doneButton)
         
         // Decimal point button
         let decimalPointButton = IRNumberKeyboardButton(style: .white, type: .decimalPoint)
         let decimalSeparator = Locale.current.decimalSeparator ?? "."
         decimalPointButton.setTitle(decimalSeparator, for: .normal)
-        buttonDictionary["point"] = decimalPointButton
+        keyboardButtons.append(decimalPointButton)
 
         
         // Button Actions & Add to view
-        for (_, button) in buttonDictionary {
+        for button in keyboardButtons {
             button.isExclusiveTouch = true
             button.addTarget(self, action: #selector(buttonInput(_:)), for: .touchUpInside)
             button.addTarget(self, action: #selector(buttonClickPlay), for: .touchDown)
@@ -217,7 +217,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         let point = gestureRecognizer.location(in: self)
         if gestureRecognizer.state == .changed || gestureRecognizer.state == .ended {
-            for (_, button) in buttonDictionary {
+            for button in keyboardButtons {
                 let isInside = button.frame.contains(point) && !button.isHidden
                 
                 if gestureRecognizer.state == .changed {

@@ -22,13 +22,13 @@ public enum IRNumberKeyboardButtonStyle: Int {
 }
 
 
-enum IRNumberKeyboardButtonType: Int {
-    case number
+enum IRNumberKeyboardButtonType {
+    case number(key: String)
     case backspace
     case done
     case special
     case decimalPoint
-    case arithmatic
+    case arithmetic(key: String)
 }
 
 
