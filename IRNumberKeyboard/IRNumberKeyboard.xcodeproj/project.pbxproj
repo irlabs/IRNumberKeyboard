@@ -17,6 +17,7 @@
 		4356D90E237B748B00A717CF /* IRNumberKeyboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356D8E9237A131200A717CF /* IRNumberKeyboard.framework */; };
 		4356D910237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D90F237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift */; };
 		4356D914237DF02D00A717CF /* IRNumberKeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */; };
+		4356D9162382FA3A00A717CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4356D9152382FA3A00A717CF /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboard.swift; sourceTree = "<group>"; };
 		4356D90F237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboardDelegate.swift; sourceTree = "<group>"; };
 		4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboardButton.swift; sourceTree = "<group>"; };
+		4356D9152382FA3A00A717CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 			children = (
 				4356D8EC237A131200A717CF /* IRNumberKeyboard.h */,
 				4356D8ED237A131200A717CF /* Info.plist */,
+				4356D9152382FA3A00A717CF /* Assets.xcassets */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -205,6 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4356D9162382FA3A00A717CF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
