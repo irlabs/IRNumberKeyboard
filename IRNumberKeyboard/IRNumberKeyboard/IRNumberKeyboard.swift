@@ -17,6 +17,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     var keyboardButtons: [IRNumberKeyboardButton]
     var separatorViews: [UIView]
     let locale: Locale
+    
+    var specialHandler: (() -> Void)?
+    
     weak var _keyInput: UIKeyInput?
     
     
@@ -241,6 +244,49 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     @objc
     private func buttonInput(_ button: IRNumberKeyboardButton) {
         
+        // Get first responder
+        guard let keyInput = keyInput else { return }
+
+        switch button.type {
+            
+        // Numbers
+        case .number(let key):
+            guard let delegate = delegate else { return }
+            guard delegate.numberKeyboardShouldInsert(text: key) else { return }
+            keyInput.insertText(key)
+            
+        // Backspace
+        case .backspace:
+            if delegate?.numberKeyboardShouldDeleteBackward() ?? true {
+                keyInput.deleteBackward()
+            }
+        
+        // Done
+        case .done:
+            if delegate?.numberKeyboardShouldReturn() ?? true {
+                self.dismissKeyboard()
+            }
+        
+        // Decimal Point
+        case .decimalPoint:
+            guard let delegate = delegate else { return }
+            guard let decimalSeparator = button.title(for: .normal) else { return }
+            guard delegate.numberKeyboardShouldInsert(text: decimalSeparator) else { return }
+            keyInput.insertText(decimalSeparator)
+
+        // Special Key
+        case .special:
+            if let handler = specialHandler {
+                handler()
+            }
+            
+        // Arithmetic
+        case .arithmetic(let key):
+            guard let delegate = delegate else { return }
+            guard delegate.numberKeyboardShouldInsert(text: key) else { return }
+            keyInput.insertText(key)
+
+        }
     }
 
     @objc
@@ -257,7 +303,8 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     @objc
     private func dismissKeyboard() {
-        
+        guard let keyInput = keyInput as? UIResponder else { return }
+        keyInput.resignFirstResponder()
     }
     
     // MARK: - Layout
