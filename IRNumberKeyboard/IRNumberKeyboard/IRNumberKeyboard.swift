@@ -53,15 +53,42 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
 
     /// If `true`, the decimal separator key will be displayed
     /// - Note: The default value of this property is `false`.
-    public var allowsDecimalPoint: Bool
+    public var allowsDecimalPoint: Bool {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
     
     /// The visible title of the Return key
     /// - Note: The default visible title of the Return key is “Done”.
-    public var returnKeyTitle: String
+    public var returnKeyTitle: String {
+        get {
+            var title = _returnKeyTitle
+            if let button = doneButton, let titleForNormal = button.title(for: .normal) {
+                title = titleForNormal
+            }
+            return title.isEmpty ? localizedSystemString("Done") : title
+        }
+        set {
+            if _returnKeyTitle != newValue {
+                if let button = doneButton {
+                    _returnKeyTitle = newValue.isEmpty ? localizedSystemString("Done") : newValue
+                    button.setTitle(_returnKeyTitle, for: .normal)
+                }
+            }
+        }
+    }
+    private var _returnKeyTitle: String
     
     /// The button style of the Return key
     /// - Note: The default value of this property is `IRNumberKeyboardButtonStyle.done`
-    public var returnKeyButtonStyle: IRNumberKeyboardButtonStyle
+    public var returnKeyButtonStyle: IRNumberKeyboardButtonStyle {
+        didSet {
+            if let button = doneButton {
+                button.style = returnKeyButtonStyle
+            }
+        }
+    }
     
     
     // MARK: - Initialization
@@ -86,7 +113,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         self.locale = locale
         
         self.allowsDecimalPoint = false
-        self.returnKeyTitle = "Done"
+        self._returnKeyTitle = "Done"
         self.returnKeyButtonStyle = .done
         
         super.init(frame: frame, inputViewStyle: inputViewStyle)
