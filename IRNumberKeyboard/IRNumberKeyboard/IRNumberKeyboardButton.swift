@@ -31,6 +31,33 @@ enum IRNumberKeyboardButtonType {
     case arithmetic(key: String)
 }
 
+extension IRNumberKeyboardButtonType: Equatable {
+    static func ==(lhs: IRNumberKeyboardButtonType, rhs: IRNumberKeyboardButtonType) -> Bool {
+        switch (lhs, rhs) {
+            
+        case (let .number(key1), let .number(key2)):
+            return key1 == key2
+            
+        case (.backspace, .backspace):
+            return true
+            
+        case (.done, .done):
+            return true
+            
+        case (.special, .special):
+            return true
+            
+        case (.decimalPoint, .decimalPoint):
+            return true
+            
+        case (let .arithmetic(key1), let .arithmetic(key2)):
+            return key1 == key2
+            
+        default:
+            return false
+        }
+    }
+}
 
 class IRNumberKeyboardButton: UIButton {
     

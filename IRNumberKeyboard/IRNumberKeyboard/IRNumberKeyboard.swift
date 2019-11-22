@@ -213,6 +213,15 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
     
     
+    private var specialButton: IRNumberKeyboardButton? {
+        return keyboardButtons.first { $0.type == .special }
+    }
+    
+    private var doneButton: IRNumberKeyboardButton? {
+        return keyboardButtons.first { $0.type == .done }
+    }
+    
+    
     // MARK: - Input
     
     @objc
