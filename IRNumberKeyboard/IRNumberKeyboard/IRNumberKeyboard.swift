@@ -262,6 +262,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         return keyboardButtons.first { $0.type == .done }
     }
     
+    private var decimalPointButton: IRNumberKeyboardButton? {
+        return keyboardButtons.first { $0.type == .decimalPoint }
+    }
     
     // MARK: - Input
     
@@ -357,11 +360,131 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         keyInput.resignFirstResponder()
     }
     
+    
     // MARK: - Layout
     
     public override func layoutSubviews() {
         super.layoutSubviews()
+        
+        let isPad = UI_USER_INTERFACE_IDIOM() == .pad
+        let spacing: CGFloat = isPad ? padBorder : 0
+        let width: CGFloat = isPad ? min(400, bounds.width) : bounds.width
+        
+        let contentRect = CGRect(x: (bounds.width - width) / 2.0,
+                                 y: spacing,
+                                 width: width,
+                                 height: bounds.height - (spacing * 2))
+        let columnWidth: CGFloat = contentRect.width / 4
+        
+        // Number buttons
+        let numberButtonSize: CGSize = CGSize(width: columnWidth, height: rowHeight)
+        let numbersPerLine = 3
+        
+        for i in 0...9 {
+            let key = "\(i)"
+            guard let button = keyboardButtons.first(where: { $0.type == .number(key: key) }) else {
+                return
+            }
+            
+            var rect = CGRect(origin: .zero, size: numberButtonSize)
+            if i == 0 {
+                
+                // 0 Key
+                rect.origin.y = numberButtonSize.height * 3
+                rect.origin.x = numberButtonSize.width
+                
+                if !allowsDecimalPoint {
+                    rect.size.width = numberButtonSize.width * 2
+                    button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: numberButtonSize.width)
+                }
+            } else {
+                
+                // Other numbers (1 - 9)
+                let line: CGFloat = CGFloat((i - 1) / numbersPerLine)
+                let pos: CGFloat = CGFloat((i - 1) % numbersPerLine)
+                
+                rect.origin.y = line * numberButtonSize.height
+                rect.origin.x = pos * numberButtonSize.width
+            }
+            
+            button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+        }
+        
+        // Special Key
+        if let button = specialButton {
+            var rect = CGRect(origin: .zero, size: numberButtonSize)
+            rect.origin.y = numberButtonSize.height * 3
+            button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+        }
+        
+        // Decimal Point
+        if let button = decimalPointButton {
+            var rect = CGRect(origin: .zero, size: numberButtonSize)
+            rect.origin.y = numberButtonSize.height * 3
+            rect.origin.x = numberButtonSize.width * 2
+            button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+            button.isHidden = !allowsDecimalPoint
+        }
+        
+        // Utility Column
+        let utilityButtonSize: CGSize = CGSize(width: columnWidth, height: rowHeight * 2)
+        for (i, type) in [IRNumberKeyboardButtonType.backspace, IRNumberKeyboardButtonType.done].enumerated() {
+            guard let button = keyboardButtons.first(where: { $0.type == type }) else { return }
+            
+            var rect = CGRect(origin: .zero, size: utilityButtonSize)
+            rect.origin.x = columnWidth * 3
+            rect.origin.y = CGFloat(i) * utilityButtonSize.height
+            button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+        }
+        
+        // Layout separators if iPhone
+        if !isPad {
+            let totalColumns = 4
+            let totalRows = numbersPerLine + 1
+            let numberOfSeparators = totalColumns + totalRows - 1
+            
+            if separatorViews.count != numberOfSeparators {
+                // Remove all old ones
+                separatorViews.forEach { $0.removeFromSuperview() }
+                separatorViews = []
+                // Add new
+                for _ in 0..<numberOfSeparators {
+                    let separator = UIView()
+                    separator.backgroundColor = UIColor(white: 0, alpha: 0.1)
+                    self.addSubview(separator)
+                    separatorViews.append(separator)
+                }
+            }
+            
+            let separatorDimension: CGFloat = 1.0 / UIScreen.main.scale
+            for (i, separator) in separatorViews.enumerated() {
+                var rect: CGRect = .zero
+                
+                if i < totalRows {
+                    rect.origin.y = CGFloat(i) * rowHeight
+                    if (i % 2) > 0 {
+                        rect.size.width = contentRect.width - columnWidth
+                    } else {
+                        rect.size.width = contentRect.width
+                    }
+                    rect.size.height = separatorDimension;
+                } else {
+                    let col = i - totalRows
+                    
+                    rect.origin.x = CGFloat(col + 1) * columnWidth
+                    rect.size.width = separatorDimension
+                    
+                    if (col == 1 && !allowsDecimalPoint) {
+                        rect.size.height = contentRect.height - rowHeight
+                    } else {
+                        rect.size.height = contentRect.height
+                    }
+                }
+                separator.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+            }
+        }
     }
+    
     
     public override func sizeThatFits(_ size: CGSize) -> CGSize {
         var returnSize = size
