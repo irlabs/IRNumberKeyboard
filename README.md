@@ -4,7 +4,7 @@ A simple numeric keyboard component, with some configurable buttons, build in Sw
 
 ![]()
 
-This keyboard was inspired by the [MMNumberKeyboard](https://github.com/matmartinez/MMNumberKeyboard) )
+( This keyboard was inspired by the [MMNumberKeyboard](https://github.com/matmartinez/MMNumberKeyboard) )
 
 ## Installation
 
@@ -22,6 +22,8 @@ Follow the current instructions in [Carthage's README](https://github.com/Cartha
 
 ### From CocoaPods
 
+Currently **IRNumberKeyboard** *does not* support CocoaPods.
+
 If your looking for a numeric keyboard library which you can install through CocoaPods, have a look at [MMNumberKeyboard](https://github.com/matmartinez/MMNumberKeyboard)
 
 ## Usage
@@ -32,13 +34,13 @@ Basically you instantiate your own keyboard view to use as an `.inputView` of yo
 
 ```swift
 // Create and configure the keyboard.
-// MMNumberKeyboard *keyboard = [[MMNumberKeyboard alloc] initWithFrame:CGRectZero];
-// keyboard.allowsDecimalPoint = YES;
-// keyboard.delegate = self;
+let keyboard = IRNumberKeyboard()
+keyboard.allowsDecimalPoint = true
+keyboard.delegate = self
 
 // Configure an example UITextField.
-// UITextField *textField = [[UITextField alloc] initWithFrame:CGRectZero];
-// textField.inputView = keyboard;
+let textField = UITextField()
+textField.inputView = keyboard
 ```
 
 You can adopt the `IRNumberKeyboardDelegate` protocol to handle the return key or whether text should be inserted or not.

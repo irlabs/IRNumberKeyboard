@@ -22,7 +22,7 @@ public protocol IRNumberKeyboardDelegate: class {
      
      - Returns:    `true` if the text should be inserted or `false` if it should not.
      */
-    func numberKeyboardShouldInsert(numberKeyboard: IRNumberKeyboard, text: String) -> Bool
+    func numberKeyboardShouldInsert(_ numberKeyboard: IRNumberKeyboard, text: String) -> Bool
     
     /**
      Asks the delegate if the keyboard should process the pressing of the return button.
@@ -31,7 +31,7 @@ public protocol IRNumberKeyboardDelegate: class {
      
      - Returns:    `true` if the keyboard should implement its default behavior for the return button; otherwise, `false`.
      */
-    func numberKeyboardShouldReturn(numberKeyboard: IRNumberKeyboard) -> Bool
+    func numberKeyboardShouldReturn(_ numberKeyboard: IRNumberKeyboard) -> Bool
     
     /**
      Asks the delegate if the keyboard should remove the character just before the cursor.
@@ -40,12 +40,18 @@ public protocol IRNumberKeyboardDelegate: class {
      
      - Returns:    `true` if the keyboard should implement its default behavior for the delete backward button; otherwise, `false`.
      */
-    func numberKeyboardShouldDeleteBackward(numberKeyboard: IRNumberKeyboard) -> Bool
+    func numberKeyboardShouldDeleteBackward(_ numberKeyboard: IRNumberKeyboard) -> Bool
     
 }
 
-extension IRNumberKeyboardDelegate {
-    func numberKeyboardShouldInsert(text: String) -> Bool { return true }
-    func numberKeyboardShouldReturn() -> Bool { return false }
-    func numberKeyboardShouldDeleteBackward() -> Bool { return false }
+public extension IRNumberKeyboardDelegate {
+    func numberKeyboardShouldInsert(_ numberKeyboard: IRNumberKeyboard, text: String) -> Bool {
+        return true
+    }
+    func numberKeyboardShouldReturn(_ numberKeyboard: IRNumberKeyboard) -> Bool {
+        return false
+    }
+    func numberKeyboardShouldDeleteBackward(_ numberKeyboard: IRNumberKeyboard) -> Bool {
+        return true
+    }
 }

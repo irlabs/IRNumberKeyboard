@@ -10,7 +10,7 @@ import UIKit
 
 import IRNumberKeyboard
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, IRNumberKeyboardDelegate {
 
     // Initialize this with an example UITextField
     var textField: UITextField = UITextField()
@@ -22,8 +22,10 @@ class ViewController: UIViewController {
         
         // Create and configure the keyboard
         let keyboard = IRNumberKeyboard()
-        // configure ...
+        
+        // Configure ...
         keyboard.allowsDecimalPoint = true
+        keyboard.delegate = self
         
         // Configure an example UITextField
         textField.inputView = keyboard
@@ -57,6 +59,14 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.textField.becomeFirstResponder()
+    }
+
+    
+    // MARK: - IRNumberKeyboard Delegate Methods
+    // (Adoption is optional)
+    
+    func numberKeyboardShouldDeleteBackward(numberKeyboard: IRNumberKeyboard) -> Bool {
+        return true
     }
 
 }

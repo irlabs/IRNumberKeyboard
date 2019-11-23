@@ -304,25 +304,25 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
             
         // Numbers
         case .number(let key):
-            guard delegate?.numberKeyboardShouldInsert(text: key) ?? true else { return }
+            guard delegate?.numberKeyboardShouldInsert(self, text: key) ?? true else { return }
             keyInput.insertText(key)
             
         // Backspace
         case .backspace:
-            if delegate?.numberKeyboardShouldDeleteBackward() ?? true {
+            if delegate?.numberKeyboardShouldDeleteBackward(self) ?? true {
                 keyInput.deleteBackward()
             }
         
         // Done
         case .done:
-            if delegate?.numberKeyboardShouldReturn() ?? true {
+            if delegate?.numberKeyboardShouldReturn(self) ?? true {
                 self.dismissKeyboard()
             }
         
         // Decimal Point
         case .decimalPoint:
             guard let decimalSeparator = button.title(for: .normal) else { return }
-            guard delegate?.numberKeyboardShouldInsert(text: decimalSeparator) ?? true else { return }
+            guard delegate?.numberKeyboardShouldInsert(self, text: decimalSeparator) ?? true else { return }
             keyInput.insertText(decimalSeparator)
 
         // Special Key
@@ -334,7 +334,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         // Arithmetic
         case .arithmetic(let key):
             guard let delegate = delegate else { return }
-            guard delegate.numberKeyboardShouldInsert(text: key) else { return }
+            guard delegate.numberKeyboardShouldInsert(self, text: key) else { return }
             keyInput.insertText(key)
 
         }
