@@ -142,7 +142,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Backspace button
         let backspaceButton = IRNumberKeyboardButton(style: .gray, type: .backspace)
-        backspaceButton.setImage(UIImage(named: "delete"), for: .normal)
+        backspaceButton.setImage(keyboardImage(named: "delete"), for: .normal)
         backspaceButton.addTarget(self, action: #selector(backspaceRepeat(_:)), forContinuousPress: 0.15)
         keyboardButtons.append(backspaceButton)
         
@@ -178,7 +178,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         
         // Default Special key
-        if let dismissImage = UIImage(named: "dismiss") {
+        if let dismissImage = keyboardImage(named: "dismiss") {
             self.configureSpecialKey(withImage: dismissImage, buttonStyle: .gray, target: self, action: #selector(dismissKeyboard))
         }
         
@@ -304,8 +304,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
             
         // Numbers
         case .number(let key):
-            guard let delegate = delegate else { return }
-            guard delegate.numberKeyboardShouldInsert(text: key) else { return }
+            guard delegate?.numberKeyboardShouldInsert(text: key) ?? true else { return }
             keyInput.insertText(key)
             
         // Backspace
@@ -322,9 +321,8 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Decimal Point
         case .decimalPoint:
-            guard let delegate = delegate else { return }
             guard let decimalSeparator = button.title(for: .normal) else { return }
-            guard delegate.numberKeyboardShouldInsert(text: decimalSeparator) else { return }
+            guard delegate?.numberKeyboardShouldInsert(text: decimalSeparator) ?? true else { return }
             keyInput.insertText(decimalSeparator)
 
         // Special Key
@@ -524,6 +522,11 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     public var enableInputClicksWhenVisible: Bool {
         return true
+    }
+    
+    private func keyboardImage(named: String) -> UIImage? {
+        let bundle = Bundle(for: type(of: self))
+        return UIImage.init(named: named, in: bundle, compatibleWith: nil)
     }
 }
 

@@ -23,6 +23,7 @@ class ViewController: UIViewController {
         // Create and configure the keyboard
         let keyboard = IRNumberKeyboard()
         // configure ...
+        keyboard.allowsDecimalPoint = true
         
         // Configure an example UITextField
         textField.inputView = keyboard
