@@ -184,11 +184,8 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleHighlight(gestureRecognizer:)))
         addGestureRecognizer(panGesture)
         
-        
         // Default Special key
-        if let dismissImage = keyboardImage(named: "dismiss") {
-            self.configureSpecialKey(withImage: dismissImage, buttonStyle: .gray, target: self, action: #selector(dismissKeyboard))
-        }
+        configureSpecialKeyAsDefault()
         
         // Default Return Key
         self.returnKeyTitle = localizedSystemString("Done")
@@ -328,6 +325,14 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         self.extraColumnHandler = handler
     }
     
+    /**
+     Configures the special key as default: to dismiss the keyboard
+    */
+    public func configureSpecialKeyAsDefault() {
+        if let dismissImage = keyboardImage(named: "dismiss") {
+            self.configureSpecialKey(withImage: dismissImage, buttonStyle: .gray, target: self, action: #selector(dismissKeyboard))
+        }
+    }
     
     // MARK: - Computed Accessor Methods
     
