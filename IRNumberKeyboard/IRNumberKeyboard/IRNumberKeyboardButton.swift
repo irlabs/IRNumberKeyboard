@@ -23,11 +23,17 @@ public enum IRNumberKeyboardButtonStyle: Int {
 
 
 public enum IRNumberKeyboardButtonType {
+    /// A simple number keys (0 - 9)
     case number(key: String)
+    /// The backspace / delete key
     case backspace
+    /// The (localized) 'Done' key
     case done
+    /// The special key that can be configured with either an image or a title
     case special
+    /// The (localized) decimal point
     case decimalPoint
+    /// An arithmetic key for calculations
     case arithmetic(key: String)
 }
 
