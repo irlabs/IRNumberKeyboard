@@ -67,6 +67,17 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         }
     }
     
+    /// If `true`, the layout of the number keys is like a calculator,
+    /// i.e. the 1 is at the bottom-left, the 9 is at the top-right.
+    ///
+    /// If `false`, the default telephone layout is used, counting from top to bottom.
+    /// - Note: The default value of this property is `false`.
+    public var calculatorLayout: Bool {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
+    
     /// The visible title of the Return key
     /// - Note: The default visible title of the Return key is “Done”.
     public var returnKeyTitle: String {
@@ -124,6 +135,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         self.locale = locale
         
         self.allowsDecimalPoint = false
+        self.calculatorLayout = false
         self._returnKeyTitle = "Done"
         self.returnKeyButtonStyle = .done
         
@@ -510,7 +522,10 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
             } else {
                 
                 // Other numbers (1 - 9)
-                let line: CGFloat = CGFloat((i - 1) / numbersPerLine)
+                var line: CGFloat = CGFloat((i - 1) / numbersPerLine)
+                if calculatorLayout {
+                    line = CGFloat(numberOfRows - 2) - line
+                }
                 let pos: CGFloat = CGFloat((i - 1) % numbersPerLine)
                 
                 rect.origin.y = line * numberButtonSize.height
