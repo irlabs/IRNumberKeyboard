@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		431FBC05238D1FE0001C8997 /* IRNumberKeyboardImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431FBC04238D1FE0001C8997 /* IRNumberKeyboardImage.swift */; };
 		4356D8EE237A131200A717CF /* IRNumberKeyboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 4356D8EC237A131200A717CF /* IRNumberKeyboard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4356D8FD237A140500A717CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D8FC237A140500A717CF /* AppDelegate.swift */; };
 		4356D8FF237A140500A717CF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4356D8FE237A140500A717CF /* ViewController.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		431FBC04238D1FE0001C8997 /* IRNumberKeyboardImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IRNumberKeyboardImage.swift; sourceTree = "<group>"; };
 		4356D8E9237A131200A717CF /* IRNumberKeyboard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = IRNumberKeyboard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4356D8EC237A131200A717CF /* IRNumberKeyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IRNumberKeyboard.h; sourceTree = "<group>"; };
 		4356D8ED237A131200A717CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			children = (
 				4356D90C237B73B400A717CF /* IRNumberKeyboard.swift */,
 				4356D913237DF02D00A717CF /* IRNumberKeyboardButton.swift */,
+				431FBC04238D1FE0001C8997 /* IRNumberKeyboardImage.swift */,
 				4356D911237DEF6800A717CF /* Protocols */,
 				4356D8F5237A139B00A717CF /* Supporting Files */,
 			);
@@ -231,6 +234,7 @@
 			files = (
 				4356D90D237B73B400A717CF /* IRNumberKeyboard.swift in Sources */,
 				4356D910237DEF5B00A717CF /* IRNumberKeyboardDelegate.swift in Sources */,
+				431FBC05238D1FE0001C8997 /* IRNumberKeyboardImage.swift in Sources */,
 				4356D914237DF02D00A717CF /* IRNumberKeyboardButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

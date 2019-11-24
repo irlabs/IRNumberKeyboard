@@ -150,7 +150,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Backspace button
         let backspaceButton = IRNumberKeyboardButton(style: .gray, type: .backspace)
-        backspaceButton.setImage(keyboardImage(named: "delete"), for: .normal)
+        backspaceButton.setImage(IRNumberKeyboardImage.delete.image(), for: .normal)
         backspaceButton.addTarget(self, action: #selector(backspaceRepeat(_:)), forContinuousPress: 0.15)
         keyboardButtons.append(backspaceButton)
         
@@ -329,9 +329,10 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      Configures the special key as default: to dismiss the keyboard
     */
     public func configureSpecialKeyAsDefault() {
-        if let dismissImage = keyboardImage(named: "dismiss") {
-            self.configureSpecialKey(withImage: dismissImage, buttonStyle: .gray, target: self, action: #selector(dismissKeyboard))
-        }
+        self.configureSpecialKey(withImage: IRNumberKeyboardImage.dismiss.image(),
+                                 buttonStyle: .gray,
+                                 target: self,
+                                 action: #selector(dismissKeyboard))
     }
     
     // MARK: - Computed Accessor Methods
@@ -658,11 +659,6 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     public var enableInputClicksWhenVisible: Bool {
         return true
-    }
-    
-    private func keyboardImage(named: String) -> UIImage? {
-        let bundle = Bundle(for: type(of: self))
-        return UIImage.init(named: named, in: bundle, compatibleWith: nil)
     }
 }
 
