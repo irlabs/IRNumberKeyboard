@@ -20,25 +20,25 @@ public protocol IRNumberKeyboardDelegate: class {
      - Parameter numberKeyboard: The keyboard instance proposing the text insertion.
      - Parameter text:           The proposed text to be inserted.
      
-     - Returns:    `true` if the text should be inserted or `false` if it should not.
+     - Returns: `true` if the text should be inserted or `false` if it should not.
      */
     func numberKeyboardShouldInsert(_ numberKeyboard: IRNumberKeyboard, text: String) -> Bool
     
     /**
      Asks the delegate if the keyboard should process the pressing of the return button.
      
-     - Parameter numberKeyboard: The keyboard whose return button was pressed.
+     - Parameter numberKeyboard: The keyboard whose return button was tapped.
      
-     - Returns:    `true` if the keyboard should implement its default behavior for the return button; otherwise, `false`.
+     - Returns: `true` if the keyboard should implement its default behavior for the return button; otherwise, `false`.
      */
     func numberKeyboardShouldReturn(_ numberKeyboard: IRNumberKeyboard) -> Bool
     
     /**
      Asks the delegate if the keyboard should remove the character just before the cursor.
      
-     - Parameter numberKeyboard: The keyboard whose return backwards button was pressed.
+     - Parameter numberKeyboard: The keyboard whose return backwards button was tapped.
      
-     - Returns:    `true` if the keyboard should implement its default behavior for the delete backward button; otherwise, `false`.
+     - Returns: `true` if the keyboard should implement its default behavior for the delete backward button otherwise, `false`.
      */
     func numberKeyboardShouldDeleteBackward(_ numberKeyboard: IRNumberKeyboard) -> Bool
     

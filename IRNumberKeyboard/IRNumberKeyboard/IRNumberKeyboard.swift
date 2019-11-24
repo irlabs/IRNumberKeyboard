@@ -18,7 +18,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     var separatorViews: [UIView]
     let locale: Locale
     
-    var specialHandler: (() -> Void)?
+    var specialKeyHandler: (() -> Void)?
     
     weak var _keyInput: UIKeyInput?
     
@@ -200,12 +200,14 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter style:     The style of the button key.
      - Parameter handler:   A handler block.
     */
-    public func configureSpecialKey(withTitle title: String, buttonStyle style: IRNumberKeyboardButtonStyle, actionHandler handler: @escaping (() -> Void)) {
+    public func configureSpecialKey(withTitle title: String,
+                                    buttonStyle style: IRNumberKeyboardButtonStyle,
+                                    actionHandler handler: @escaping (() -> Void)) {
         guard let button = specialButton else { return }
         button.setTitle(title, for: .normal)
         button.style = style
         button.setImage(nil, for: .normal)
-        self.specialHandler = handler
+        self.specialKeyHandler = handler
     }
     
     /**
@@ -215,12 +217,14 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter style:     The style of the button key.
      - Parameter handler:   A handler block.
     */
-    public func configureSpecialKey(withImage image: UIImage, buttonStyle style: IRNumberKeyboardButtonStyle, actionHandler handler: @escaping (() -> Void)) {
+    public func configureSpecialKey(withImage image: UIImage,
+                                    buttonStyle style: IRNumberKeyboardButtonStyle,
+                                    actionHandler handler: @escaping (() -> Void)) {
         guard let button = specialButton else { return }
         button.setTitle(nil, for: .normal)
         button.style = style
         button.setImage(image, for: .normal)
-        self.specialHandler = handler
+        self.specialKeyHandler = handler
     }
     
     /**
@@ -231,7 +235,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter target:    The target object—that is, the object to which the action message is sent.
      - Parameter action:    A selector identifying an action message. It cannot be `nil`.
     */
-    public func configureSpecialKey(withTitle title :String, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any?, action: Selector) {
+    public func configureSpecialKey(withTitle title :String,
+                                    buttonStyle style: IRNumberKeyboardButtonStyle,
+                                    target: Any?, action: Selector) {
         self.configureSpecialKey(withTitle: title, buttonStyle: style) { [weak self] in
             guard let `self` = self else { return }
             UIApplication.shared.sendAction(action, to: target, from: self, for: nil)
@@ -246,7 +252,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
      - Parameter target:    The target object—that is, the object to which the action message is sent.
      - Parameter action:    A selector identifying an action message. It cannot be `nil`.
     */
-    public func configureSpecialKey(withImage image: UIImage, buttonStyle style: IRNumberKeyboardButtonStyle, target: Any?, action: Selector) {
+    public func configureSpecialKey(withImage image: UIImage,
+                                    buttonStyle style: IRNumberKeyboardButtonStyle,
+                                    target: Any?, action: Selector) {
         self.configureSpecialKey(withImage: image, buttonStyle: style) { [weak self] in
             guard let `self` = self else { return }
             UIApplication.shared.sendAction(action, to: target, from: self, for: nil)
@@ -327,7 +335,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
 
         // Special Key
         case .special:
-            if let handler = specialHandler {
+            if let handler = specialKeyHandler {
                 handler()
             }
             
