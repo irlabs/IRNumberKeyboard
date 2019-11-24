@@ -24,7 +24,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     
     private let numberOfRows: Int = 4
-    private let rowHeight: CGFloat = 55.0
+    private let buttonRowHeight: CGFloat = 55.0
     private let padBorder: CGFloat = 7.0
     private let padSpacing: CGFloat = 8.0
     
@@ -364,6 +364,14 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     public override func layoutSubviews() {
         super.layoutSubviews()
         
+        let insets: UIEdgeInsets = {
+            if #available(iOS 11.0, *) {
+                return safeAreaInsets
+            } else {
+                return UIEdgeInsets.zero
+            }
+        }()
+
         let isPad = UI_USER_INTERFACE_IDIOM() == .pad
         let spacing: CGFloat = isPad ? padBorder : 0
         let width: CGFloat = isPad ? min(400, bounds.width) : bounds.width
@@ -371,8 +379,11 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         let contentRect = CGRect(x: (bounds.width - width) / 2.0,
                                  y: spacing,
                                  width: width,
-                                 height: bounds.height - (spacing * 2))
+                                 height: bounds.height - (spacing * 2)
+            ).inset(by: insets)
+        
         let columnWidth: CGFloat = contentRect.width / 4
+        let rowHeight: CGFloat = contentRect.height / CGFloat(numberOfRows)
         
         // Number buttons
         let numberButtonSize: CGSize = CGSize(width: columnWidth, height: rowHeight)
@@ -437,9 +448,11 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Layout separators if iPhone
         if !isPad {
-            let totalColumns = 4
-            let totalRows = numbersPerLine + 1
-            let numberOfSeparators = totalColumns + totalRows - 1
+            let hasSafeArea = insets != .zero
+            let totalRows = numberOfRows + (hasSafeArea ? 1 : 0)
+            let totalColumns = 4 + (hasSafeArea ? 2 : 0)
+            let startAtCol = hasSafeArea ? 0 : 1
+            let numberOfSeparators = totalRows + totalColumns - 1
             
             if separatorViews.count != numberOfSeparators {
                 // Remove all old ones
@@ -461,6 +474,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                 if i < totalRows {
                     rect.origin.y = CGFloat(i) * rowHeight
                     if (i % 2) > 0 {
+                        // For the big backspace and return buttons in the right column
                         rect.size.width = contentRect.width - columnWidth
                     } else {
                         rect.size.width = contentRect.width
@@ -469,10 +483,10 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                 } else {
                     let col = i - totalRows
                     
-                    rect.origin.x = CGFloat(col + 1) * columnWidth
+                    rect.origin.x = CGFloat(col + startAtCol) * columnWidth
                     rect.size.width = separatorDimension
                     
-                    if (col == 1 && !allowsDecimalPoint) {
+                    if (col == 2 - startAtCol && !allowsDecimalPoint) {
                         rect.size.height = contentRect.height - rowHeight
                     } else {
                         rect.size.height = contentRect.height
@@ -489,7 +503,15 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         let isPad = UI_USER_INTERFACE_IDIOM() == .pad
         let spacing: CGFloat = isPad ? padBorder : 0.0
         
-        returnSize.height = rowHeight * CGFloat(numberOfRows) + (spacing * 2.0)
+        let insets: UIEdgeInsets = {
+            if #available(iOS 11.0, *) {
+                return UIApplication.shared.delegate?.window??.safeAreaInsets ?? safeAreaInsets
+            } else {
+                return UIEdgeInsets.zero
+            }
+        }()
+
+        returnSize.height = buttonRowHeight * CGFloat(numberOfRows) + (spacing * 2.0) + insets.bottom
         if returnSize.width == 0.0 {
             returnSize.width = UIScreen.main.bounds.size.width
         }
