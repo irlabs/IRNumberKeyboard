@@ -2,9 +2,18 @@
 
 A simple numeric keyboard component, with some configurable buttons, build in Swift for iOS.
 
-![]()
+![Different devices and different configurations](Screenshots.png)
 
 ( This keyboard was inspired by the [MMNumberKeyboard](https://github.com/matmartinez/MMNumberKeyboard) )
+
+## Features
+
+- A special key can be configured with both image or title.
+- The default (dismiss) image and default behavior of the special key can be set.
+- An extra (5th) column of keys can be configured
+- Layout of the number keys can be configured: telephone layout or calculator layout
+- Keyboard images can be retrieved through helper enum (a.o. a special `plusMinusSign` image)
+- Special sample code showing use of arithmetic buttons
 
 ## Installation
 
