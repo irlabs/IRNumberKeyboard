@@ -22,7 +22,7 @@ public enum IRNumberKeyboardButtonStyle: Int {
 }
 
 
-enum IRNumberKeyboardButtonType {
+public enum IRNumberKeyboardButtonType {
     case number(key: String)
     case backspace
     case done
@@ -32,7 +32,7 @@ enum IRNumberKeyboardButtonType {
 }
 
 extension IRNumberKeyboardButtonType: Equatable {
-    static func ==(lhs: IRNumberKeyboardButtonType, rhs: IRNumberKeyboardButtonType) -> Bool {
+    public static func ==(lhs: IRNumberKeyboardButtonType, rhs: IRNumberKeyboardButtonType) -> Bool {
         switch (lhs, rhs) {
             
         case (let .number(key1), let .number(key2)):
