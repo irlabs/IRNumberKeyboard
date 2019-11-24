@@ -16,9 +16,13 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     
     var keyboardButtons: [IRNumberKeyboardButton]
     var separatorViews: [UIView]
+    
+    var extraColumnKeys: [IRNumberKeyboardButtonType]
+    var extraColumnStyle: IRNumberKeyboardButtonStyle
     let locale: Locale
     
     var specialKeyHandler: (() -> Void)?
+    var extraColumnHandler: ((String) -> Void)?
     
     weak var _keyInput: UIKeyInput?
     
@@ -27,6 +31,10 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     private let buttonRowHeight: CGFloat = 55.0
     private let padBorder: CGFloat = 7.0
     private let padSpacing: CGFloat = 8.0
+    
+    private let buttonFont = UIFont.systemFont(ofSize: 28.0, weight: .light)
+    private let doneButtonFont = UIFont.systemFont(ofSize: 17.0)
+
     
     // MARK: - Public Accessible Variables
     
@@ -110,6 +118,9 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     public init(frame: CGRect = .zero, inputViewStyle: UIInputView.Style = .keyboard, locale: Locale = .current) {
         self.keyboardButtons = []
         self.separatorViews = []
+        
+        self.extraColumnKeys = []
+        self.extraColumnStyle = .white
         self.locale = locale
         
         self.allowsDecimalPoint = false
@@ -126,9 +137,6 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
     
     private func setupViews() {
-        
-        let buttonFont = UIFont.systemFont(ofSize: 28.0, weight: .light)
-        let doneButtonFont = UIFont.systemFont(ofSize: 17.0)
         
         // Number buttons
         for i in 0...9 {
@@ -262,6 +270,67 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
     
     
+    // MARK: - Configuring the extra keys column
+    
+    /**
+     Configures an extra column of keys and an action block.
+     The extra column can be dynamically added or removed by providing an array of keys or an empty array.
+     
+     - Parameter keyTypes:  An array of `IRNumberKeyboardButtonType` key types. The array should be the number of rows (4) buttons long or empty to remove the column.
+     - Parameter style:     The style of the button keys.
+     - Parameter handler:   A handler block to be invoked if any or the keys is tapped.
+     The first argument of the handler is the `key: String` of the tapped button.
+     */
+    public func configureExtraColumn(withKeys keyTypes: [IRNumberKeyboardButtonType],
+                                     buttonStyle style: IRNumberKeyboardButtonStyle,
+                                     actionHandler handler: @escaping ((String) -> Void)) {
+        // Check if the array of buttons is the number of rows long
+        guard keyTypes.isEmpty || keyTypes.count == numberOfRows else {
+            print("Warning: the number of key types of the extra column is not matching the number of rows. Discarding.")
+            return
+        }
+        
+        // Remove old keys
+        for type in extraColumnKeys {
+            guard let index = keyboardButtons.firstIndex(where: { $0.type == type }) else { continue }
+            let button = keyboardButtons[index]
+            button.removeFromSuperview()
+            keyboardButtons.remove(at: index)
+        }
+        
+        self.extraColumnKeys = keyTypes
+        self.extraColumnStyle = style
+        
+        // Add new keys
+        for type in extraColumnKeys {
+            let button = IRNumberKeyboardButton(style: extraColumnStyle, type: type)
+            let title: String = {
+                switch type {
+                case .number(let key):
+                    return key
+                case .arithmetic(let key):
+                    return key
+                default:
+                    return ""
+                }
+            }()
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = buttonFont
+            keyboardButtons.append(button)
+            
+            button.isExclusiveTouch = true
+            button.addTarget(self, action: #selector(buttonInput(_:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(buttonClickPlay), for: .touchDown)
+            
+            addSubview(button)
+        }
+
+        self.extraColumnHandler = handler
+    }
+    
+    
+    // MARK: - Computed Accessor Methods
+    
     private var specialButton: IRNumberKeyboardButton? {
         return keyboardButtons.first { $0.type == .special }
     }
@@ -307,7 +376,24 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         
         // Get first responder
         guard let keyInput = keyInput else { return }
-
+        
+        // Extra column handler
+        if extraColumnKeys.contains(button.type) {
+            let key: String = {
+                switch button.type {
+                case .number(let key):
+                    return key
+                case .arithmetic(let key):
+                    return key
+                default:
+                    return ""
+                }
+            }()
+            if let handler = extraColumnHandler {
+                handler(key)
+            }
+        }
+        
         switch button.type {
             
         // Numbers
@@ -341,10 +427,8 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
             
         // Arithmetic
         case .arithmetic(let key):
-            guard let delegate = delegate else { return }
-            guard delegate.numberKeyboardShouldInsert(self, text: key) else { return }
+            guard delegate?.numberKeyboardShouldInsertArithmetic(self, key: key) ?? true else { return }
             keyInput.insertText(key)
-
         }
     }
 
@@ -379,10 +463,12 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                 return UIEdgeInsets.zero
             }
         }()
-
+        
         let isPad = UI_USER_INTERFACE_IDIOM() == .pad
         let spacing: CGFloat = isPad ? padBorder : 0
-        let width: CGFloat = isPad ? min(400, bounds.width) : bounds.width
+        let numberOfColumns: Int = extraColumnKeys.isEmpty ? 4 : 5
+        let widthOnPad: CGFloat = CGFloat(numberOfColumns) * 100
+        let width: CGFloat = isPad ? min(widthOnPad, bounds.width) : bounds.width
         
         let contentRect = CGRect(x: (bounds.width - width) / 2.0,
                                  y: spacing,
@@ -390,11 +476,12 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                                  height: bounds.height - (spacing * 2)
             ).inset(by: insets)
         
-        let columnWidth: CGFloat = contentRect.width / 4
+        let columnWidth: CGFloat = contentRect.width / CGFloat(numberOfColumns)
         let rowHeight: CGFloat = contentRect.height / CGFloat(numberOfRows)
         
         // Number buttons
         let numberButtonSize: CGSize = CGSize(width: columnWidth, height: rowHeight)
+        let numbersOffset: CGFloat = extraColumnKeys.isEmpty ? 0 : columnWidth
         let numbersPerLine = 3
         
         for i in 0...9 {
@@ -408,7 +495,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                 
                 // 0 Key
                 rect.origin.y = numberButtonSize.height * 3
-                rect.origin.x = numberButtonSize.width
+                rect.origin.x = numberButtonSize.width + numbersOffset
                 
                 if !allowsDecimalPoint {
                     rect.size.width = numberButtonSize.width * 2
@@ -421,8 +508,21 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
                 let pos: CGFloat = CGFloat((i - 1) % numbersPerLine)
                 
                 rect.origin.y = line * numberButtonSize.height
-                rect.origin.x = pos * numberButtonSize.width
+                rect.origin.x = pos * numberButtonSize.width + numbersOffset
             }
+            
+            button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
+        }
+        
+        // Extra Column Keys
+        for (i, type) in extraColumnKeys.enumerated() {
+            guard let button = keyboardButtons.first(where: { $0.type == type }) else {
+                return
+            }
+            
+            var rect = CGRect(origin: .zero, size: numberButtonSize)
+            rect.origin.y = CGFloat(i) * numberButtonSize.height
+            rect.origin.x = 0
             
             button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
         }
@@ -431,6 +531,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         if let button = specialButton {
             var rect = CGRect(origin: .zero, size: numberButtonSize)
             rect.origin.y = numberButtonSize.height * 3
+            rect.origin.x = numbersOffset
             button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
         }
         
@@ -438,7 +539,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         if let button = decimalPointButton {
             var rect = CGRect(origin: .zero, size: numberButtonSize)
             rect.origin.y = numberButtonSize.height * 3
-            rect.origin.x = numberButtonSize.width * 2
+            rect.origin.x = numberButtonSize.width * 2 + numbersOffset
             button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
             button.isHidden = !allowsDecimalPoint
         }
@@ -449,7 +550,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
             guard let button = keyboardButtons.first(where: { $0.type == type }) else { return }
             
             var rect = CGRect(origin: .zero, size: utilityButtonSize)
-            rect.origin.x = columnWidth * 3
+            rect.origin.x = columnWidth * 3 + numbersOffset
             rect.origin.y = CGFloat(i) * utilityButtonSize.height
             button.frame = buttonRect(rect, contentRect: contentRect, isPad: isPad)
         }
@@ -458,7 +559,7 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
         if !isPad {
             let hasSafeArea = insets != .zero
             let totalRows = numberOfRows + (hasSafeArea ? 1 : 0)
-            let totalColumns = 4 + (hasSafeArea ? 2 : 0)
+            let totalColumns = numberOfColumns + (hasSafeArea ? 2 : 0)
             let startAtCol = hasSafeArea ? 0 : 1
             let numberOfSeparators = totalRows + totalColumns - 1
             

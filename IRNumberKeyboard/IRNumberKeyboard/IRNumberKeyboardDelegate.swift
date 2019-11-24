@@ -42,6 +42,16 @@ public protocol IRNumberKeyboardDelegate: class {
      */
     func numberKeyboardShouldDeleteBackward(_ numberKeyboard: IRNumberKeyboard) -> Bool
     
+    /**
+     Asks the delegate if the arithmetic key tapped should be inserted or not.
+     If not the `extraColumnHandler` could process it.
+     
+     - Parameter numberKeyboard: The keyboard whose arithmetic key was tapped.
+     - Parameter key:            The arithmetic key that was tapped.
+     
+     - Returns: `true` if the keyboard should implement its default behavior: inserting the arithmetic key as is. Otherswise `false`.
+     */
+    func numberKeyboardShouldInsertArithmetic(_ numberKeyboard: IRNumberKeyboard, key: String) -> Bool
 }
 
 public extension IRNumberKeyboardDelegate {
@@ -52,6 +62,9 @@ public extension IRNumberKeyboardDelegate {
         return false
     }
     func numberKeyboardShouldDeleteBackward(_ numberKeyboard: IRNumberKeyboard) -> Bool {
+        return true
+    }
+    func numberKeyboardShouldInsertArithmetic(_ numberKeyboard: IRNumberKeyboard, key: String) -> Bool {
         return true
     }
 }
