@@ -42,7 +42,7 @@ public enum IRNumberKeyboardImage: CustomStringConvertible {
     */
     public func image() -> UIImage {
         if let img = IRNumberKeyboardImageGetter.keyboardImage(named: self.description) {
-            return img
+            return img.withRenderingMode(.alwaysTemplate)
         }
         return UIImage()
     }

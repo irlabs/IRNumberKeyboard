@@ -80,9 +80,11 @@ class IRNumberKeyboardButton: UIButton {
     
     private var fillColor: UIColor
     private var highlightedFillColor: UIColor
+    private var disabledFillColor: UIColor
     
     private var controlColor: UIColor
     private var highlightedControlColor: UIColor
+    private var disabledControlColor: UIColor
     
     
     // MARK: - Initialization
@@ -93,8 +95,10 @@ class IRNumberKeyboardButton: UIButton {
         
         self.fillColor = .clear
         self.highlightedFillColor = .clear
+        self.disabledFillColor = .clear
         self.controlColor = .clear
         self.highlightedControlColor = .clear
+        self.disabledControlColor = .clear
         
         super.init(frame: .zero)
         
@@ -122,6 +126,12 @@ class IRNumberKeyboardButton: UIButton {
         }
     }
     
+    override var isEnabled: Bool {
+        didSet {
+            self.updateButtonAppearance()
+        }
+    }
+    
     
     // MARK: - Update the Button Style
     
@@ -130,10 +140,15 @@ class IRNumberKeyboardButton: UIButton {
         
         var fillColor: UIColor
         var highlightedFillColor: UIColor
+        var disabledFillColor: UIColor
+        var disabledControlColor: UIColor
+
         switch self.style {
         case .white:
             fillColor = UIColor.white
             highlightedFillColor = UIColor(red: 0.82, green: 0.837, blue: 0.863, alpha: 1.0)
+            disabledFillColor = UIColor.white
+            disabledControlColor = UIColor(red: 0.674, green: 0.7, blue: 0.744, alpha: 1.0)
         case .gray:
             if isPad {
                 fillColor = UIColor(red: 0.674, green: 0.7, blue: 0.744, alpha: 1.0)
@@ -141,9 +156,13 @@ class IRNumberKeyboardButton: UIButton {
                 fillColor = UIColor(red: 0.81, green: 0.837, blue: 0.86, alpha: 1.0)
             }
             highlightedFillColor = UIColor.white
+            disabledFillColor = UIColor(red: 0.882, green: 0.891, blue: 0.90, alpha: 1.0)
+            disabledControlColor = UIColor(red: 0.715, green: 0.736, blue: 0.759, alpha: 1.00)
         case .done:
             fillColor = UIColor(red: 0, green: 0.479, blue: 1.0, alpha: 1.0)
             highlightedFillColor = UIColor.white
+            disabledFillColor = UIColor(red: 0.6, green: 0.8, blue: 1.0, alpha: 1.0)
+            disabledControlColor = UIColor(red: 0.86, green: 0.93, blue: 1.0, alpha: 1.0)
         }
         
         var controlColor: UIColor
@@ -159,11 +178,14 @@ class IRNumberKeyboardButton: UIButton {
         self.setTitleColor(controlColor, for: .normal)
         self.setTitleColor(highlightedControlColor, for: .selected)
         self.setTitleColor(highlightedControlColor, for: .highlighted)
+        self.setTitleColor(disabledControlColor, for: .disabled)
         
         self.fillColor = fillColor
         self.highlightedFillColor = highlightedFillColor
+        self.disabledFillColor = disabledFillColor
         self.controlColor = controlColor
         self.highlightedControlColor = highlightedControlColor
+        self.disabledControlColor = disabledControlColor
         
         if isPad {
             self.layer.cornerRadius = 4.0
@@ -177,12 +199,17 @@ class IRNumberKeyboardButton: UIButton {
     }
     
     private func updateButtonAppearance() {
-        if self.isHighlighted || self.isSelected {
-            self.backgroundColor = highlightedFillColor
-            self.imageView?.tintColor = controlColor
+        if self.isEnabled {
+            if self.isHighlighted || self.isSelected {
+                self.backgroundColor = highlightedFillColor
+                self.imageView?.tintColor = controlColor
+            } else {
+                self.backgroundColor = fillColor
+                self.imageView?.tintColor = highlightedControlColor
+            }
         } else {
-            self.backgroundColor = fillColor
-            self.imageView?.tintColor = highlightedControlColor
+            self.backgroundColor = disabledFillColor
+            self.imageView?.tintColor = disabledControlColor
         }
     }
     

@@ -128,11 +128,13 @@ class ViewController: UIViewController, IRNumberKeyboardDelegate {
             }
             keyboard.configureSpecialKey(withImage: IRNumberKeyboardImage.plusMinusSign.image(),
                                          buttonStyle: .white, target: self, action: #selector(handleSpecialKey))
+            keyboard.enableKeyTypes([.special, .arithmetic(key: "+"), .arithmetic(key: "−")])
         } else {
             // Configure as default
             keyboard.calculatorLayout = false
             keyboard.configureExtraColumn(withKeys: [], buttonStyle: .gray) { _ in }
             keyboard.configureSpecialKeyAsDefault()
+            keyboard.enableKeyTypes([.special])
         }
     }
     

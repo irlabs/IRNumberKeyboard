@@ -338,6 +338,33 @@ public class IRNumberKeyboard: UIInputView, UIInputViewAudioFeedback {
     }
     
     /**
+     Enables the given keys (key types)
+     
+     By default all keys are enabled. But if this function is used, can be configured to be
+     enabled or disabled.
+     Both the `.special` button and the extra column keys will be disabled or enabled.
+     
+     - Parameter enabledKeys:   An array of keys (`[IRNumberKeyboardButtonType]`) which will be enabled.
+                                Keys not present in this array, will be disabled.
+    */
+    public func enableKeyTypes(_ enabledKeys: [IRNumberKeyboardButtonType]) {
+        
+        // Special Key
+        if let button = specialButton {
+            button.isEnabled = enabledKeys.contains(.special)
+        }
+        
+        // Extra Column Keys
+        for type in extraColumnKeys {
+            guard let button = keyboardButtons.first(where: { $0.type == type }) else {
+                return
+            }
+            button.isEnabled = enabledKeys.contains(type)
+        }
+        
+    }
+    
+    /**
      Configures the special key as default: to dismiss the keyboard
     */
     public func configureSpecialKeyAsDefault() {
