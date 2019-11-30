@@ -11,6 +11,7 @@ A simple numeric keyboard component, with some configurable buttons, build in Sw
 - A special key can be configured with both image or title.
 - The default (dismiss) image and default behavior of the special key can be set.
 - An extra (5th) column of keys can be configured
+- Special key and Extra keys can be disabled
 - Layout of the number keys can be configured: telephone layout or calculator layout
 - Keyboard images can be retrieved through helper enum (a.o. a special `plusMinusSign` image)
 - Special sample code showing use of arithmetic buttons
